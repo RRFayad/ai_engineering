@@ -37,6 +37,10 @@
     vi. Final LLM Call -> Process API response
     vii. Final output
 
+#### Using Ollama
+
+- We installed and are going to use **ollama** + **gpt-oss:latest** (a light model - also its noticeable the decrease of the quality of the responses)
+
 - **Obs.:**
   - About temperature:
     - Low temperature (0 ~ 0.3) is more deterministic / repeatable, good for code and logic
