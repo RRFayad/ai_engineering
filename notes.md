@@ -12,7 +12,40 @@
 
 - One important thing is that LangChain standardize the way we consume LLMs, so it makes easy to just switch the LLM when needed
 
-### uv notes
+### Our first project
+
+- Setup:
+  - Installed:
+    - langchain
+    - langchain-openai
+      - **Obs.:** LangChain decided to split these integration packages, which is good, bcs the whole package is lighter, and each provider gets the responsibility of maintaining the package
+
+  - `from langchain_core.prompts import PromptTemplate`
+    - prompt templates are abstractions from langchain, which allows us to parametrize our prompts
+
+  - `from langchain_openai import ChatOpenAI`
+    - Wrapper over the openAi api
+
+- We are going to write our first LangChain **chain**
+  - A workflow where the output of one step is the input of the next step
+  - Eg.:
+    i. User Query
+    ii. Prompt Template -> format query into structured prompt
+    iii. LLM -> Generate response
+    iv. Output parser -> Parse output into structured data
+    v. Tool call -> process something (which can be an external api call)
+    vi. Final LLM Call -> Process API response
+    vii. Final output
+
+- **Obs.:**
+  - About temperature:
+    - Low temperature (0 ~ 0.3) is more deterministic / repeatable, good for code and logic
+    - High temperature (0.8+) is good for creativity, such as lyrics, poems, fiction etc
+  - Check LCEL (Langchain Expression Language -> format the template and pass it to the llm)
+
+## Overall Notes
+
+### UV
 
 - We are going to use `uv` as our package manager
 
@@ -21,9 +54,6 @@
 - `uv add langchain`
 - `uv add langchain`
 
-### Our first project
+### Habits
 
-- Installed:
-  - langchain
-  - langchain-openai
-    - **Obs.:** LangChain decided to split these integration packages, which is good, bcs the whole package is lighter, and each provider gets the responsibility of maintaining the package
+- Always check the used framework code to understand the structure
