@@ -8,9 +8,9 @@
 
 ## 2. LangChain basics
 
-- LangChain is an open source framework that simplifies the process of creating LLM powered apps with tools and abstractions
+- LangChain is an open-source framework that provides abstractions and building blocks for developing LLM-powered applications
 
-- One important thing is that LangChain standardize the way we consume LLMs, so it makes easy to just switch the LLM when needed
+- One important thing is that LangChain standardizes interactions with different LLM providers, making it much easier to switch between models or providers
 
 ### Our first project
 
@@ -37,15 +37,23 @@
     vi. Final LLM Call -> Process API response
     vii. Final output
 
-#### Using Ollama
-
-- We installed and are going to use **ollama** + **gpt-oss:latest** (a light model - also its noticeable the decrease of the quality of the responses)
-
 - **Obs.:**
   - About temperature:
     - Low temperature (0 ~ 0.3) is more deterministic / repeatable, good for code and logic
     - High temperature (0.8+) is good for creativity, such as lyrics, poems, fiction etc
-  - Check LCEL (Langchain Expression Language -> format the template and pass it to the llm)
+
+#### LCEL (Langchain Expression Language)
+
+- A declarative syntax for composing LangChain components into chains
+
+#### Using Ollama
+
+- We installed and are going to use **ollama** + **gpt-oss:latest** (a light model - also its noticeable the decrease of the quality of the responses)
+
+#### LangSmith Tracing
+
+- Just by adding the LangSmith env vars (check docs), it tracks everything regarding the AI consumption
+  - In its dashboard we can see costs, latency, token etc
 
 ## Overall Notes
 
