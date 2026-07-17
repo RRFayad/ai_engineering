@@ -21,4 +21,39 @@
   - langchain-tavily tavily-python - Standard library used for web browsing
   - black isort
 
+### Creation
+
+#### Tools
+
+- Conceptually we need to give an agent tools and the LLM
+  - A tool is a function an agent can execute
+  - We need to add the decorator **`@tool`**, add the **type hinting**, and **docstrings description**, so the LLM understand when to use it
+
+    ```python
+    @tool
+    def search_database(query: str, limit: int = 10) -> str:
+      """
+        Search customer database for record matching the query.
+
+        Args:
+          query: Search terms to look for
+          limit: Max results to return
+      """
+
+      return f"Found {limit} results for '{query}'"
+    ```
+
+#### Agent
+
+- Define the LLM, list the tools, create the agent (LLM and Tools), invoke agent
+
+```python
+  llm = ChatOllama(temperature=0, model="gpt-oss:latest")
+  tools = [search_tool]
+  agent = create_agent(model=llm, tools=tools)
+  result = agent.invoke(
+    {"messages": [HumanMessage(content="What is the weather in Tokyo?")]}
+)
+```
+
 ## Overall Notes
