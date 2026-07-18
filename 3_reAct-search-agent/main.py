@@ -3,25 +3,13 @@ from langchain.agents import create_agent
 from langchain.tools import tool
 from langchain_core.messages import HumanMessage
 from langchain_ollama import ChatOllama
-from tavily import TavilyClient
+from langchain_tavily import TavilySearch
 
 load_dotenv()
 
-tavily = TavilyClient()
-
-
-@tool
-def search_tool(query: str) -> dict:
-    """
-    This is a tool that searches for information based on a query. It takes a string input (the query) and returns a string output (the search results). In this example, it simply returns a hardcoded response for demonstration purposes.
-    """
-    print(f"Searching for: {query}")
-    response = tavily.search(query=query)
-    return response
-
 
 llm = ChatOllama(temperature=0, model="gpt-oss:latest")
-tools = [search_tool]
+tools = [TavilySearch()]
 agent = create_agent(model=llm, tools=tools)
 
 

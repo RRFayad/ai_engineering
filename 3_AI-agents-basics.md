@@ -56,4 +56,9 @@
 )
 ```
 
-## Overall Notes
+#### Adding searching feature (with Tavily)
+
+- Initially we added tavily inside our custom tool (regular tavily). But, tavily has its own LangChain framework, with is already ready to consume (`langchain-tavily`)
+
+- Langchain-tavily has its tools own langchain tools, which are more precise.
+  - So basically the final code is the same above, and the tool is `tools = [TavilySearch()]`
