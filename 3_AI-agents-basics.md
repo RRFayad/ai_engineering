@@ -62,3 +62,11 @@
 
 - Langchain-tavily has its tools own langchain tools, which are more precise.
   - So basically the final code is the same above, and the tool is `tools = [TavilySearch()]`
+
+#### Structured Output with Pydantic
+
+- In our example we created the BaseModels, and the `agent = create_agent(model=llm, tools=tools, response_format=AgentResponse)`
+
+- Structured Output may be implemented in 2 forms:
+  - `ProviderStrategy[StructuredResponse]`: Uses structured output supported natively by the provider. The provider/API enforces the schema, making it the most reliable option.
+  - `ToolStrategy[StructuredResponse]`: is the fallback when provider-native structured output is unavailable. LangChain creates an artificial tool whose arguments correspond to your Pydantic schema. The model must call that tool correctly.
