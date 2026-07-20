@@ -41,16 +41,18 @@
 - Install dependencies:
   - `langchain`, `langchain-openai`
 - Add `.env` with OpenAI and LangSmith Api Keys
-
 - Structure file:
-
-  ```python
-    load_dotenv()
-    MAX_ITERATIONS = 10
-    MODEL = "qwen3:1.7b"
-  ```
-
+  - ```python
+      load_dotenv()
+      MAX_ITERATIONS = 10
+      MODEL = "qwen3:1.7b"
+    ```
 - Create tools
+- Create the Agent Function
+  - init the llm;
+  - bind tools;
+  - add prompts for the reasoning capabilities
+    - A system message - ENsure there are strict defensive rules;
 
 ## Overall Notes
 

@@ -6,7 +6,7 @@ from langchain_core.messages import SystemMessage, HumanMessage, ToolMessage
 
 load_dotenv()
 MAX_ITERATIONS = 10
-MODEL = "qwen3:1.7b"
+MODEL = "ollama:qwen3:1.7b"
 
 
 # --- Tools ---
@@ -34,11 +34,29 @@ def apply_discount(price: float, discount_tier: str) -> float:
 # --- Agent Loop ---
 
 
-@traceable(
-    name="agent_tool_calling",
-)
+@traceable(name="agent_tool_calling")
 def run_agent(question: str):
-    pass
+    tools = [get_product_price, apply_discount]
+    tools_dict = {tool.name: tool for tool in tools}
+
+    llm = init_chat_model(model=MODEL, temperature=0)
+    llm_with_tools = llm.bind_tools(tools)
+    print(f"Question: {question}")
+    print("-" * 60)
+
+    messages = [
+        SystemMessage(
+            content="You are a helpful shopping assistant. "
+            "You have access to the following tools: get_product_price, apply_discount.  /n/n"
+            "STRICT RULES - You must follow exactly: /n"
+            "1. NEVER guess or assume any product price. You must use the get_product_price tool to fetch the price of a product. /n"
+            "2. You must use the apply_discount tool to apply discounts and only AFTER you have received a price from the get_product_price tool. /n"
+            "Pass the exact price returned by the get_product_price tool to the apply_discount tool. Do NOT pass a made-up number. /n"
+            "3. Never calculate a discount yourself. You must use the apply_discount tool to calculate the discounted price. /n"
+            "4. If the user does not specify a discount tier, ask for it - do NOT assume one. /n"
+        ),
+        HumanMessage(content=question),
+    ]
 
 
 if __name__ == "__main__":
