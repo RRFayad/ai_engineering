@@ -33,3 +33,36 @@
     - Observation
   - Agent Loop 3:
     - No Tool to call - Give final answer
+
+## 5. Layer 1 - The ReAct Loop
+
+### Setup Up:
+
+- Install dependencies:
+  - `langchain`, `langchain-openai`
+- Add `.env` with OpenAI and LangSmith Api Keys
+
+- Structure file:
+
+  ```python
+    load_dotenv()
+    MAX_ITERATIONS = 10
+    MODEL = "qwen3:1.7b"
+  ```
+
+- Create tools
+
+## Overall Notes
+
+### LangSmith
+
+- We can add a traceable decorator to trace any function we want
+
+```python
+
+@traceable(
+    name="agent_tool_calling",
+)
+def run_agent(question: str):
+    pass
+```
