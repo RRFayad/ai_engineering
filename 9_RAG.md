@@ -36,8 +36,36 @@
 ### Boiler Plate Setup
 
 - Install dependencies:
-  - uv add langchain langchain-community langchain_openai langchain-pinecone langchain-unstructured python-dotenv langchainhub unstructured black isort
+  - `uv add langchain langchain_openai langchain-pinecone langchain-text-splitters langchain-unstructured python-dotenv langchainhub unstructured black isort`
 
 - Pinecone:
   - Database > Create index > Text Embedding 3 Small (Open AI) > Dimension: 1536 (longer = more information)
   - Add to the env the API KEY (name it `PINECONE_API_KEY`) and also the `INDEX_NAME`
+
+### Ingestion
+
+Ingest the text data in the vector store
+
+- Loading the blog text (text loader)
+- Splitting the text into chunks (TextSplitter)
+- Embed the chunks and get vector (OpenAIEmbeddings)
+- Store the embeddings in Pinecone vector store (PineconeVectorStore)
+
+```python
+from langchain_openai import OpenAIEmbeddings
+from langchain_text_splitters import TextSplitter
+from langchain_pinecone import PineconeVectorStore
+from langchain_unstructured import UnstructuredLoader
+```
+
+- UnstructuredLoader
+  - Basically classes implementations about how to process different text formats (from different files)
+  - We can see in Langchain the original files for the text loader for different texts (whatsapp, notion etc)
+  - Sure LangChain have it already done, so we can parse and manipulate it easily and in the same way for different files
+
+- TextSplitter
+  - Split it into chunks (again, many strategies possible)
+
+- OpenAIEmbeddings
+  - Embed the chunks into vectors
+  - It estimates a rate of 3000 pages per dollar
