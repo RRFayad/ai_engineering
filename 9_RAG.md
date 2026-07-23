@@ -1,5 +1,7 @@
 ## RAG (Retrieval Augmentation Generation) - Embeddings, Vector Databases and & Retrieval
 
+<img src="./assets/RAG-flow.png" width="600" height="600" />
+
 ### Concept
 
 - Imagine we have a large document with specific info, we want the LLM use as a base
@@ -80,3 +82,11 @@ from langchain_community.document_loaders import TextLoader
   - **Important:** Ensure the model used contains the same dimensions as the index (or customize dimensions)
     - `embeddings = OpenAIEmbeddings(model="text-embedding-3-small")`
     - `embeddings = OpenAIEmbeddings(model="text-embedding-3-large", dimensions=1536)`
+
+### Retrieval
+
+- Take user Query > Embed into a vector > Get the Top-K chunks > Feed the LLM with Query + Closest chunks
+
+- We are going to compare the retrieval without and with LCEL
+
+- Without LCEL > More verbose, error-prone, harder to maintain, etc
