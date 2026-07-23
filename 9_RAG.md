@@ -29,7 +29,7 @@
   - Its a technique of creating a vector space from the text, such that the distance of the vectors in the space have a meaning
     - We can simply consider it a black box, but in theory, the vectors (and the space "position") are defined by the meaning of each snippet (word or sentence) - the closer meaning, the closer vector value
 
-- So basically we have a book:
+- So basically if we have a book:
   - Split it into thousands or even millions of chunks > embed them using an embedding model (turning them into a vector) > save into vector database
   - When there is a query: We embed it, and then we calculate the closest vectors > closest chunks are sent in the context > LLM answer it
 
@@ -53,19 +53,30 @@ Ingest the text data in the vector store
 
 ```python
 from langchain_openai import OpenAIEmbeddings
-from langchain_text_splitters import TextSplitter
 from langchain_pinecone import PineconeVectorStore
-from langchain_unstructured import UnstructuredLoader
+from langchain_text_splitters import CharacterTextSplitter
+from langchain_community.document_loaders import TextLoader
 ```
 
-- UnstructuredLoader
+- TextLoader
   - Basically classes implementations about how to process different text formats (from different files)
   - We can see in Langchain the original files for the text loader for different texts (whatsapp, notion etc)
   - Sure LangChain have it already done, so we can parse and manipulate it easily and in the same way for different files
+  - In LangChain docs we can see there are others, for example `langchain_docling` for getting text from web
 
 - TextSplitter
   - Split it into chunks (again, many strategies possible)
+    - These param are the basics rule of thumb (chunk size and chunk overlap)
+      - Remember the more context in a prompt, the less precise it tends to be
+
+  ```python
+    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+    texts = text_splitter.split_documents(document)
+  ```
 
 - OpenAIEmbeddings
   - Embed the chunks into vectors
   - It estimates a rate of 3000 pages per dollar
+  - **Important:** Ensure the model used contains the same dimensions as the index (or customize dimensions)
+    - `embeddings = OpenAIEmbeddings(model="text-embedding-3-small")`
+    - `embeddings = OpenAIEmbeddings(model="text-embedding-3-large", dimensions=1536)`
