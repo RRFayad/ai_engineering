@@ -90,3 +90,80 @@ from langchain_community.document_loaders import TextLoader
 - We are going to compare the retrieval without and with LCEL
 
 - Without LCEL > More verbose, error-prone, harder to maintain, etc
+
+- **prompt_template:** We just add the variables as if we were creating f strings
+  ```python
+  prompt_template = ChatPromptTemplate.from_template("""
+    Use the following pieces of context to answer the question at the end.
+    If you don't know the answer, just say that you don't know, don't try to make up an answer.
+    {context}
+    Question: {question}
+    Provide a Detailed Answer:
+    """)
+  ```
+
+```python
+def retrieval_chain_without_lcel(query):
+    """Retrieve documents and generate an answer without using LCEL"""
+
+    # Step 1: Retrieve relevant documents based on the question
+    docs = retriever.invoke(query)
+
+    # Step 2: Format the retrieved documents
+    context = format_docs(docs)
+
+    # Step 3: Format the prompt with the context and question
+    messages = prompt_template.format_messages(context=context, question=query)
+
+    # Step 4: Generate the answer using the LLM
+    response = llm.invoke(messages)
+
+    # Step 5: return the generated answer
+    print("Answer (without LCEL):", response.content)
+    return response.content
+```
+
+- With LCEL:
+
+  ```python
+  from operator import itemgetter
+  from langchain_core.runnables import RunnablePassthrough
+  from langchain_core.output_parsers import StrOutputParser
+  ```
+
+  - Advantages:
+    - Declarative and composable - Easy to chain operations with `|`
+    - built-in streaming: `chain.stream()`
+    - built-in async: `chain.ainvoke()` and `chain.astream()`
+    - batching
+    - Type safety
+    - Less code and reusable
+
+  ```python
+    retrieval_chain = (
+        RunnablePassthrough.assign(
+            context=itemgetter("question")
+            | retriever
+            | format_docs  # LangChain converts into Runnable Lambdas
+        )
+        | prompt_template  # prompt template
+        | llm  # invokes the LLM with the formatted prompt
+        | StrOutputParser()  # extract the content from the LLM response
+    )
+  ```
+
+  ### How it works:
+  - Remember that LCEL uses the | operator to compose Runnables. The output of one Runnable becomes the input of the next Runnable.
+    - Check without LCEL, we are "manually chaining"
+    - But there was 1 exception:
+      - For the `prompt_template` we needed to transform the original input from `{"question": "lorem ipsum"}` into `{"question": "lorem ipsum", "context": "lorem ipsum"}`
+    - Thats why we needed the `RunnablePassthrough.assign`:
+      - It receives another Runnable (a chain) responsible for computing the value of the new field.
+        - **Obs.:**(LangChain transforms every function into a Runnable - thats why format_docs works)
+      - The Runnable computes the value for context, and `RunnablePassthrough.assign()` adds that key-value pair to the original input dictionary.
+      - Conceptually, `RunnablePassthrough.assign()` is equivalent to: `input["context"] = context_chain.invoke(input)` except that it returns a new dictionary instead of mutating the original one.
+
+## About LangChain Docs
+
+- Eden also discuss he doesn't really like the LangChain docs for RAGs, since they suggest to create a ReAct agent that decides to use a retrieval tool
+  - It has their view about pros and cons of their approach - Eden reinforces this way displayed is the real one used in production
