@@ -46,3 +46,33 @@
 
 - We are going to work with `tavily-crawl`
 - Its going to scrape LangChain Docs, so we can ingest it
+
+### Imports
+
+```python
+import os
+import ssl
+import asyncio
+import certifi
+from dotenv import load_dotenv
+from typing import Any, Dict, List
+
+from langchain_chroma import Chroma
+from langchain_openai import OpenAIEmbeddings
+from langchain_core.documents import Document
+from langchain_pinecone import PineconeVectorStore
+from langchain_tavily import TavilyCrawl, TavilyExtract, TavilyMap
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+```
+
+- `os` - env vars
+- `ssl` + `certifi` - fix HTTPS cert verification for the crawl requests
+- `asyncio` - run ingestion async (crawl many pages concurrently)
+- `load_dotenv` - load `.env`
+- `typing` - type hints
+- `Chroma` - local/alt vector store (for quick tests vs Pinecone)
+- `OpenAIEmbeddings` - embed text into vectors
+- `Document` - LangChain's core text + metadata object
+- `PineconeVectorStore` - store/query embeddings in Pinecone
+- `TavilyCrawl` / `TavilyExtract` / `TavilyMap` - scrape LangChain docs (crawl site, map URLs, extract content)
+- `RecursiveCharacterTextSplitter` - split docs into chunks before embedding
