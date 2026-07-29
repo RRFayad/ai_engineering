@@ -76,3 +76,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 - `PineconeVectorStore` - store/query embeddings in Pinecone
 - `TavilyCrawl` / `TavilyExtract` / `TavilyMap` - scrape LangChain docs (crawl site, map URLs, extract content)
 - `RecursiveCharacterTextSplitter` - split docs into chunks before embedding
+
+### Tavily Crawling
+
+- Check Docs - Theres a page on Tavily Crawl best practices

@@ -16,6 +16,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from logger import Colors, log_error, log_header, log_info, log_success, log_warning
 
 load_dotenv()
+# ---------------- Initialization----------------------
 
 # Configure SSL context to use certifi certificates
 ssl_context = ssl.create_default_context(cafile=certifi.where())
@@ -38,9 +39,39 @@ tavily_extract = TavilyExtract()
 tavily_map = TavilyMap(max_depth=5, max_breadth=20, max_pages=1000)
 tavily_crawl = TavilyCrawl()
 
+# ----------------------------------------------------------------
+
 
 async def main():
     """Main async function to orchestrate the entire process"""
+    log_header("DOCUMENTATION INGESTION PIPELINE")
+    log_info(
+        "TavilyCrawl: Starting to crawl docs from https://python.langchain.com",
+        Colors.PURPLE,
+    )
+
+    # ---------------- STEP 1: SCRAPE AND LOAD DOCS ----------------------
+
+    res = tavily_crawl.invoke(
+        {
+            "url": "https://python.langchain.com",
+            "max_depth": 5,  # Usually start with 1 - 2 and test (check docs)
+            "extract_depth": "advanced",  # Extracts more data
+            # "instructions": "content on ai agents",  # Natural language to instruct the crawler
+        }
+    )
+    # For each result we want to create a LangChain Document
+    all_docs = [
+        (
+            Document(
+                page_content=result["raw_content"], metadata={"source": result["url"]}
+            )
+        )
+        for result in res["results"]
+    ]
+    log_success(f"Tavily Crawl: Successfully crawled {len(all_docs)} URLs")
+
+    # ----------------------------------------------------------------
 
 
 if __name__ == "__main__":
