@@ -6,6 +6,10 @@
   - LLM Memory
   - Streamlit FE
 
+## Ingestion Pipeline
+
+Source (LangChain Docs) > Load (get content) > Transform (split and create Docs) > Embed > Store
+
 ### Setup
 
 - Pinecone:
@@ -80,3 +84,30 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 ### Tavily Crawling
 
 - Check Docs - Theres a page on Tavily Crawl best practices
+- **Obs.:** This is simpler, and attends most cases probably
+
+```python
+    res = tavily_crawl.invoke(
+        {
+            "url": "https://python.langchain.com",
+            "max_depth": 5,  # Usually start with 1 - 2 and test (check docs)
+            "extract_depth": "advanced",  # Extracts more data
+            # "instructions": "content on ai agents",  # Natural language to instruct the crawler
+        }
+    )
+    # For each result we want to create a LangChain Document
+    all_docs = [
+        (
+            Document(
+                page_content=result["raw_content"], metadata={"source": result["url"]}
+            )
+        )
+        for result in res["results"]
+    ]
+```
+
+#### Tavily Map and Extract: Splitting in Batches (more control and performance)
+
+- We called `Step 1B` on the ingestion code
+  - Splitting into Map and Extract we have more control on the process
+  - Also, we are able to split into batches and use async methods, **which makes the solution more scalable**
