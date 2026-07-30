@@ -117,3 +117,15 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 ![Retrieval Flow](./assets/retrieval_flow.png)
 
 - For the retrieval we are going to create an agent with a retrieval tool
+  - Tool Response format:
+    ![](assets/screenshot.png)
+    - Content (default) - only content
+    - Content and artifact : returns 2 values
+      - The artifact is not being sent to LLM, but it might be useful for us, so we handle the retrieved docs ids
+
+  - **About the artifacts**:
+    - The artifact is any structured Python object that the tool wants to return to the application, but not send to the LLM.
+    - We can see that the `ToolMessage`s contain artifact (which is structured data regarding the retrieved document - not to be used in the llm, but in our code)
+      - Without artifacts, the agent would return only one thing (the regular answer)
+      - With the artifact (again, set up in the tools decorator) we see meta data, doc id, etc
+    - In the code we loop all messages, look for the artifacts
