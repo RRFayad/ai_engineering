@@ -20,20 +20,19 @@ from langchain_pinecone import PineconeVectorStore
 from langchain_tavily import TavilyCrawl, TavilyExtract, TavilyMap
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-from logger import Colors, log_error, log_header, log_info, log_success, log_warning
+from utils.logger import (
+    Colors,
+    log_error,
+    log_header,
+    log_info,
+    log_success,
+    log_warning,
+)
 
 # ---------------- Constants and Env ----------------------
 load_dotenv()
 URL = "https://python.langchain.com"
 EXTRACT_BATCH_SIZE = 3
-
-
-# ---------------- Utils ----------------------
-async def extract_batch(batch_num: int, batch: List[str]) -> Dict[str, Any]:
-    log_info(f"Batch {batch_num}: starting extraction of {len(batch)} URLs")
-    result = await tavily_extract.ainvoke({"urls": batch, "extract_depth": "advanced"})
-    log_success(f"Batch {batch_num}: finished extraction of {len(batch)} URLs")
-    return result
 
 
 # ---------------- Initialization----------------------
@@ -54,7 +53,25 @@ tavily_extract = TavilyExtract()
 tavily_map = TavilyMap(max_depth=3, max_breadth=15, max_pages=500)
 tavily_crawl = TavilyCrawl()
 
-# ----------------------------------------------------------------
+
+# ---------------- Utils ----------------------
+async def extract_batch(batch_num: int, batch: List[str]) -> Dict[str, Any]:
+    log_info(f"Batch {batch_num}: starting extraction of {len(batch)} URLs")
+    result = await tavily_extract.ainvoke({"urls": batch, "extract_depth": "advanced"})
+    log_success(f"Batch {batch_num}: finished extraction of {len(batch)} URLs")
+    return result
+
+
+async def add_batch(batch: List[Document], batch_num: int, batches_qty=0):
+    try:
+        await vectorstore.aadd_documents(batch)
+        log_success(
+            f"VectorStore Indexing: Successfully added batch {batch_num}/{batches_qty} ({len(batch)} documents)"
+        )
+    except Exception as e:
+        log_error(f"VectorStore Indexing: Failed to add batch {batch_num} - {e}")
+        return False
+    return True
 
 
 async def main():
@@ -121,6 +138,71 @@ async def main():
     log_success(f"Tavily Extract: Successfully extracted {len(all_docs_async)} URLs")
 
     # --------------------------------------------------------------------------------------------------------
+
+    # ---------------- STEP 2: Split Documents Into Chunks ----------------------
+    log_header("DOCUMENTATION CHUNKING PHASE")
+    CHUNK_SIZE = 4000
+    CHUNK_OVERLAP = 200
+
+    log_info(
+        f"✂️ Text Splitter: Processing {len(all_docs_async)} docs with {CHUNK_SIZE} chunk size and {CHUNK_OVERLAP} chunk overlap",
+        Colors.YELLOW,
+    )
+
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP
+    )
+    splitted_docs = text_splitter.split_documents(all_docs_async)
+    log_success(f"Split Documents: Successfully splitted {len(splitted_docs)} CHUNKS")
+
+    # ---------------- STEP 3: Embed and Vectorize asynchronously ----------------------
+
+    BATCH_SIZE = 50
+    log_header("VECTOR STORAGE PHASE")
+    log_info(
+        f"📚 VectorStore Indexing: Preparing to add {len(splitted_docs)} documents to vector store",
+        Colors.DARKCYAN,
+    )
+
+    # Create batches
+    batches = [
+        splitted_docs[i : i + BATCH_SIZE]
+        for i in range(0, len(splitted_docs), BATCH_SIZE)
+    ]
+    log_info(
+        f"📦 VectorStore Indexing: Splitting into {len(batches)} batches of {BATCH_SIZE} documents each",
+        Colors.DARKCYAN,
+    )
+    # Process batches concurrently.
+    # Open the vectorstore's async session once, up front: otherwise each
+    # concurrent aadd_documents call opens/closes its own on the shared
+    # index client, and whichever batch finishes first closes the session
+    # out from under the others ("Session is closed").
+
+    # NOTE: Remember with is the same as open and then close (and handle exception)
+    async with vectorstore:
+        tasks = [
+            add_batch(batch, i + 1, len(batches)) for i, batch in enumerate(batches)
+        ]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+
+    # Count successful batches
+    successful = sum(1 for result in results if result is True)
+
+    if successful == len(batches):
+        log_success(
+            f"VectorStore Indexing: All batches processed successfully! ({successful}/{len(batches)})"
+        )
+    else:
+        log_warning(
+            f"VectorStore Indexing: Processed {successful}/{len(batches)} batches successfully"
+        )
+
+    log_header("PIPELINE COMPLETE")
+    log_success("🎉 Documentation ingestion pipeline finished successfully!")
+    log_info("📊 Summary:", Colors.BOLD)
+    log_info(f"   • Documents extracted: {len(all_docs_async)}")
+    log_info(f"   • Chunks created: {len(splitted_docs)}")
 
 
 if __name__ == "__main__":
