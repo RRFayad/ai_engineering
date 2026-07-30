@@ -111,3 +111,9 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 - We called `Step 1B` on the ingestion code
   - Splitting into Map and Extract we have more control on the process
   - Also, we are able to split into batches and use async methods, **which makes the solution more scalable**
+
+## Retrieval
+
+![Retrieval Flow](./assets/retrieval_flow.png)
+
+- For the retrieval we are going to create an agent with a retrieval tool
