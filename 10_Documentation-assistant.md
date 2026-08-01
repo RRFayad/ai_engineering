@@ -129,3 +129,9 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
       - Without artifacts, the agent would return only one thing (the regular answer)
       - With the artifact (again, set up in the tools decorator) we see meta data, doc id, etc
     - In the code we loop all messages, look for the artifacts
+
+## Frontend
+
+- We are going to create a basic UI with streamlit (not recommended for prod)
+  - Actually it seems pretty fast for MVPs
+  - We can understand the idea checking the code, while the state is being handled in `session_state`
