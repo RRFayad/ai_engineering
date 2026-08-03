@@ -135,3 +135,24 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 - We are going to create a basic UI with streamlit (not recommended for prod)
   - Actually it seems pretty fast for MVPs
   - We can understand the idea checking the code, while the state is being handled in `session_state`
+
+## RAG Apps in Production
+
+- [Chat Langchain](https://chat.langchain.com/)
+- [Repo](https://github.com/langchain-ai/chat-langchain)
+
+- Chat LagChain is a RAG App in Production for Langchain ecosystem questions
+  - Generative UI - There is a lecture about it, but its nice how it brings us to the sources of each statement
+
+- **Important:** - Check overall code
+
+## RAG Architectures
+
+![](./assets/RAG%20Architecture.png)
+
+- Hybrid RAG approach is usually the most used for production
+  - Query enhancements
+  - Retrieval Validation
+  - Answer validation etc
+
+- RAG Agent isn't the best, since its too much flexible
