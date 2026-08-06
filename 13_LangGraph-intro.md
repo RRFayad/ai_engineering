@@ -59,3 +59,16 @@
 ### ReAct
 
 - Set up the LLM with the tools
+
+### Nodes
+
+- We have to define:
+  - agent_reason
+  - tool_nodes
+
+- `MessagesState` is the class of the state with messages that will flow through states
+
+```python
+class MessagesState(TypedDict):
+  messages: Annotated[list[AnyMessage], add_messages]
+```
