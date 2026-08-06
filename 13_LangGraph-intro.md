@@ -55,3 +55,7 @@
 ### Setup
 
 - `uv add langchain langchain-openai langchain-tavily langgraph python-dotenv black isort`
+
+### ReAct
+
+- Set up the LLM with the tools
