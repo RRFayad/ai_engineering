@@ -49,3 +49,9 @@
   - **Human In the Loop**
     - If we want to get human feedback
   - **Persistence**
+
+## Hands-on project - ReAct Agent with LangGraph
+
+### Setup
+
+- `uv add langchain langchain-openai langchain-tavily langgraph python-dotenv black isort`
