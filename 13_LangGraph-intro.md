@@ -72,3 +72,7 @@
 class MessagesState(TypedDict):
   messages: Annotated[list[AnyMessage], add_messages]
 ```
+
+### Main.py
+
+- Connect nodes and create flow
