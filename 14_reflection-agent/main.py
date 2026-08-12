@@ -12,7 +12,7 @@ from chains import generate_chain, reflection_chain
 
 
 class MessageGraph(TypedDict):
-    messages: Annotated[list[BaseMessage], "The messages in the conversation"]
+    messages: Annotated[list[BaseMessage], add_messages]
     # critique: Annotated[str, "The critique of the tweet"]
     # new_tweet: Annotated[str, "The new tweet generated based on the critique"]
 
@@ -54,3 +54,14 @@ print(graph.get_graph().print_ascii())
 
 if __name__ == "__main__":
     print("Hello from 14-reflection-agent!")
+
+    input: MessageGraph = {
+        "messages": [
+            HumanMessage(
+                content="What you need to know about bjj ranking system: A blue belt, is a good white belt. A purple belt is a black belt who doesnt have enough time on the mat yet."
+            )
+        ]
+    }
+
+    result = graph.invoke(input)
+    print(result)
