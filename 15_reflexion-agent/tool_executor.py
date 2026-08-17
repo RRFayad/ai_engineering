@@ -10,7 +10,7 @@ from schemas import AnswerQuestion, ReviseAnswer
 tavily_tool = TavilySearch(max_results=5)
 
 
-def run_queries(search_queries: list[str], tool: TavilySearch, **kwargs):
+def run_queries(search_queries: list[str], **kwargs):
     """Run search queries using the provided tool and return the results."""
     return tavily_tool.batch([{"query": query} for query in search_queries])
 

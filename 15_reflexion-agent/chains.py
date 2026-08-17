@@ -42,6 +42,10 @@ first_responder_prompt_template = actor_prompt_template.partial(
     first_instruction="Answer the question in detail, in about 250 words."
 )
 
+first_responder = first_responder_prompt_template | llm.bind_tools(
+    tools=[AnswerQuestion], tool_choice="AnswerQuestion"
+)
+
 revise_instructions = """Revise your previous answer using the new information.
     - You should use the previous critique to add important information to your answer.
         - You MUST include numerical citations in your revised answer to ensure it can be verified.
@@ -61,11 +65,7 @@ if __name__ == "__main__":
         content="In BJJ, what are the best entries for the Over Under Pass?"
     )
 
-    chain = (
-        first_responder_prompt_template
-        | llm.bind_tools(tools=[AnswerQuestion], tool_choice="AnswerQuestion")
-        | parser_pydantic
-    )
+    chain = first_responder | parser_pydantic
 
     res = chain.invoke(input={"messages": [human_message]})
     print(res)
