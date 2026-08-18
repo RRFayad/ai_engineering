@@ -22,3 +22,7 @@
 ## State
 
 - Simply defining the Schema
+
+## Grade Documents
+
+- We want to iterate over the documents and score if they are relevant or not
