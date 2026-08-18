@@ -16,3 +16,7 @@
   - So it stores locally
 
 - **Obs.:** The ingestion part can be improved / made more complex, but for this project we are sticking to the basics, while focusing on more complex retrieval
+
+## State
+
+- Simply defining the Schema
