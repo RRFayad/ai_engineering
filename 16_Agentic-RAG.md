@@ -10,6 +10,8 @@
     - If it is, all good
     - If it is not, filter them out, and look for more context
 
+  - <img src="./assets/RAG_mermaid.png" width="200" height="600">
+
 ## Ingestion
 
 - We are going to use ChromaDB as vector store
