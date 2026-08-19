@@ -26,3 +26,7 @@
 ## Grade Documents
 
 - We want to iterate over the documents and score if they are relevant or not
+
+## Web Search Node
+
+## Generation Node
