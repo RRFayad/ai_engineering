@@ -2,7 +2,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
-llm = ChatOpenAI(temperature=0)
+llm = ChatOpenAI(model="gpt-5.6-luna", temperature=0)
 
 # Inline equivalent of hub.pull("rlm/rag-prompt") — the hub module was removed
 # from the langchain package, and pulling public prompts now requires a
