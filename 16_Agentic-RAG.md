@@ -50,3 +50,9 @@
 ## Self Rag
 
 - It basically reflects on the answer generated, to confirm its a good enough answer (and related to the documents)
+  - We added the `answer_grader` and `hallucination_grader` to the logic
+
+## Adaptive RAG
+
+- Adding a question router to route our question to different RAG flows
+  - We added the `router` to determine if we are going to make a websearch OR retrieve documents
