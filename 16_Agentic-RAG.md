@@ -46,3 +46,7 @@
 
 - `StateGraph(GraphState)`, entry point `RETRIEVE` → `GRADE_DOCUMENTS` → conditional edge (`decide_to_generate`, reads `web_search` flag) → `WEBSEARCH` or `GENERATE` → `GENERATE` → `END`.
 - `main.py` invokes it: `app.invoke({"question": ...})`.
+
+## Self Rag
+
+- It basically reflects on the answer generated, to confirm its a good enough answer (and related to the documents)
